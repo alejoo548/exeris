@@ -19,14 +19,44 @@
         <span class="cta-label">Agendar</span>
         <span class="cta-arrow">→</span>
       </a>
+      <button class="nav-burger" id="navBurger" aria-label="Abrir menú" aria-expanded="false">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+      </button>
     </div>
     <span class="nav-trail" aria-hidden="true"></span>
   </nav>
 </div>
 
 <script>
-  // Nav: tighten background once user has scrolled past hero
+  // Mobile menu toggle
+  const navBurger = document.getElementById('navBurger');
+  const navMenu = document.getElementById('navMenu');
   const navWrap = document.getElementById('navWrap');
+  const body = document.body;
+
+  if (navBurger && navMenu) {
+    navBurger.addEventListener('click', () => {
+      const isOpen = navMenu.classList.contains('open');
+      navMenu.classList.toggle('open', !isOpen);
+      navBurger.classList.toggle('open', !isOpen);
+      navBurger.setAttribute('aria-expanded', String(!isOpen));
+      body.style.overflow = !isOpen ? 'hidden' : '';
+    });
+
+    // Close menu when a link is clicked
+    const links = navMenu.querySelectorAll('a');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navBurger.classList.remove('open');
+        navBurger.setAttribute('aria-expanded', 'false');
+        body.style.overflow = '';
+      });
+    });
+  }
+
+  // Nav: tighten background once user has scrolled past hero
   let lastScrolled = false;
   window.addEventListener('scroll', () => {
     if (!navWrap) return;
@@ -40,7 +70,6 @@
   // ============================================================
   // NAV: sliding indicator (hover + scroll-spy)
   // ============================================================
-  const navMenu = document.getElementById('navMenu');
   if (navMenu) {
     const navIndicator = navMenu.querySelector('.nav-indicator') as HTMLElement;
     const navLinks = navMenu.querySelectorAll('a[data-target]');
