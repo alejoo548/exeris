@@ -1,0 +1,143 @@
+---
+---
+<!-- SALA · CARRUSEL -->
+<section class="sala" id="sala" data-screen-label="04 Sala">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">SECCIÓN — 04 / SALA</div>
+        <h2 class="section-title" style="margin-top:16px;">LA SALA<br/>EXERIS</h2>
+      </div>
+      <div class="label">VISTA · EXR-RM-01</div>
+    </div>
+
+    <p class="sala-lede reveal">
+      El espacio donde la doctrina se ejecuta. Arquitectura quirúrgica
+      diseñada como un instrumento más — limpia, geométrica, calibrada.
+    </p>
+
+    <div class="carousel reveal">
+      <div class="carousel-stage">
+        <div class="img-slot dark carousel-slot" data-label="">
+          <span class="slot-id" id="carId">[ RM-01 ]</span>
+          <span class="slot-meta">DROP IMAGE</span>
+          <div class="slot-center" id="carCenter">
+            <span class="ic">01</span>
+            <span id="carTitle">SALA PRINCIPAL · PLANO LARGO</span>
+          </div>
+        </div>
+
+        <!-- Stage overlay info -->
+        <div class="carousel-info">
+          <div class="carousel-info-row">
+            <span class="carousel-num"><span id="carNum">01</span><span class="of">/ 04</span></span>
+            <h3 class="carousel-title" id="carHeading">Sala principal</h3>
+            <p class="carousel-desc" id="carDesc">Plano general del quirófano EXR-01. Iluminación cenital LED 5500 K, superficies en acero quirúrgico mate.</p>
+          </div>
+        </div>
+
+        <!-- Nav arrows -->
+        <button class="carousel-arrow prev" id="carPrev" aria-label="Anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-arrow next" id="carNext" aria-label="Siguiente">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Thumbnails / progress -->
+      <div class="carousel-thumbs" id="carThumbs">
+        <button class="thumb active" data-i="0">
+          <span class="thumb-bar"></span>
+          <span class="thumb-label">Sala principal</span>
+        </button>
+        <button class="thumb" data-i="1">
+          <span class="thumb-bar"></span>
+          <span class="thumb-label">Instrumental</span>
+        </button>
+        <button class="thumb" data-i="2">
+          <span class="thumb-bar"></span>
+          <span class="thumb-label">Equipo</span>
+        </button>
+        <button class="thumb" data-i="3">
+          <span class="thumb-bar"></span>
+          <span class="thumb-label">Arquitectura</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slides = [
+    { id: '[ RM-01 ]', n: '01', ic: '01',
+      title: 'SALA PRINCIPAL · PLANO LARGO',
+      heading: 'Sala principal',
+      desc: 'Plano general del quirófano EXR-01. Iluminación cenital LED 5500 K, superficies en acero quirúrgico mate, simetría 1:1.' },
+    { id: '[ RM-02 ]', n: '02', ic: '02',
+      title: 'INSTRUMENTAL · MACRO',
+      heading: 'Instrumental',
+      desc: 'Detalle macro del instrumental. Acero forjado, tolerancia ± 0.1 mm, geometría calibrada para la doctrina del corte preciso.' },
+    { id: '[ RM-03 ]', n: '03', ic: '03',
+      title: 'EQUIPO · RETRATO',
+      heading: 'El equipo',
+      desc: 'Cirujano y equipo en planificación pre-operatoria. La doctrina antes que la herramienta; el método antes que la mano.' },
+    { id: '[ RM-04 ]', n: '04', ic: '04',
+      title: 'ARQUITECTURA · CORREDOR / ACCESO',
+      heading: 'Arquitectura',
+      desc: 'Corredor estéril de acceso a la sala. Líneas rectas, materiales fríos. El espacio que precede al corte ya está calibrado.' },
+  ];
+
+  const stage = document.querySelector('.carousel-stage');
+  const carId = document.getElementById('carId');
+  const carTitle = document.getElementById('carTitle');
+  const carNum = document.getElementById('carNum');
+  const carHeading = document.getElementById('carHeading');
+  const carDesc = document.getElementById('carDesc');
+  const carCenter = document.getElementById('carCenter');
+  const thumbs = document.querySelectorAll('.thumb');
+  
+  if (stage && carId && carTitle && carNum && carHeading && carDesc && carCenter && thumbs.length > 0) {
+    let idx = 0;
+    let autoTimer: number | NodeJS.Timeout;
+
+    const goTo = (i: number, manual?: boolean) => {
+      idx = (i + slides.length) % slides.length;
+      const s = slides[idx];
+      stage.classList.add('is-changing');
+      setTimeout(() => {
+        carId.textContent = s.id;
+        carTitle.textContent = s.title;
+        carNum.textContent = s.n;
+        carHeading.textContent = s.heading;
+        carDesc.textContent = s.desc;
+        const icSpan = carCenter.querySelector('.ic');
+        if (icSpan) icSpan.textContent = s.ic;
+        stage.classList.remove('is-changing');
+      }, 280);
+      
+      thumbs.forEach((t, ti) => t.classList.toggle('active', ti === idx));
+      if (manual) restartAuto();
+    };
+
+    const restartAuto = () => {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(() => goTo(idx + 1), 6000);
+    };
+
+    const prevBtn = document.getElementById('carPrev');
+    const nextBtn = document.getElementById('carNext');
+    
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(idx - 1, true));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(idx + 1, true));
+    
+    thumbs.forEach(t => {
+      t.addEventListener('click', () => {
+        const indexAttr = (t as HTMLElement).dataset.i;
+        if (indexAttr) goTo(+indexAttr, true);
+      });
+    });
+
+    restartAuto();
+  }
+</script>

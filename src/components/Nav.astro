@@ -1,0 +1,97 @@
+---
+---
+<!-- NAV -->
+<div class="nav-wrap" id="navWrap">
+  <nav class="nav">
+    <a href="#top" class="nav-logo" aria-label="EXERIS">
+      <img src="/assets/exeris-logo.png" alt="EXERIS — Alta Precisión Quirúrgica" />
+    </a>
+    <div class="nav-menu" id="navMenu">
+      <a href="#manifesto" data-target="manifesto">Manifesto</a>
+      <a href="#mark" data-target="mark">Identidad</a>
+      <a href="#sala" data-target="sala">Sala</a>
+      <a href="#why" data-target="why">Disciplina</a>
+      <span class="nav-indicator" aria-hidden="true"></span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-meta">EXR <span class="v">/ v.2026</span></span>
+      <a href="#contact" class="nav-cta">
+        <span class="cta-label">Agendar</span>
+        <span class="cta-arrow">→</span>
+      </a>
+    </div>
+    <span class="nav-trail" aria-hidden="true"></span>
+  </nav>
+</div>
+
+<script>
+  // Nav: tighten background once user has scrolled past hero
+  const navWrap = document.getElementById('navWrap');
+  let lastScrolled = false;
+  window.addEventListener('scroll', () => {
+    if (!navWrap) return;
+    const shouldScroll = window.scrollY > 60;
+    if (shouldScroll !== lastScrolled) {
+      navWrap.classList.toggle('scrolled', shouldScroll);
+      lastScrolled = shouldScroll;
+    }
+  }, { passive: true });
+
+  // ============================================================
+  // NAV: sliding indicator (hover + scroll-spy)
+  // ============================================================
+  const navMenu = document.getElementById('navMenu');
+  if (navMenu) {
+    const navIndicator = navMenu.querySelector('.nav-indicator') as HTMLElement;
+    const navLinks = navMenu.querySelectorAll('a[data-target]');
+    let currentActive: Element | null = null;
+
+    const moveIndicatorTo = (el: Element | null) => {
+      if (!el || !navIndicator) {
+        navMenu.classList.remove('has-active');
+        return;
+      }
+      const menuRect = navMenu.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const x = elRect.left - menuRect.left + 22;
+      const w = elRect.width - 44;
+      navIndicator.style.transform = `translateX(${x}px)`;
+      navIndicator.style.width = w + 'px';
+      navMenu.classList.add('has-active');
+    };
+
+    navLinks.forEach((a) => {
+      a.addEventListener('mouseenter', () => moveIndicatorTo(a));
+    });
+    navMenu.addEventListener('mouseleave', () => {
+      if (currentActive) moveIndicatorTo(currentActive);
+      else navMenu.classList.remove('has-active');
+    });
+
+    // Scroll-spy
+    const spyTargets = Array.from(navLinks).map(a => {
+      const targetId = (a as HTMLAnchorElement).dataset.target;
+      return {
+        a,
+        section: targetId ? document.getElementById(targetId) : null,
+      };
+    }).filter(t => t.section);
+
+    const spyIo = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const match = spyTargets.find(t => t.section === e.target);
+          if (match) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            match.a.classList.add('active');
+            currentActive = match.a;
+            moveIndicatorTo(match.a);
+          }
+        }
+      });
+    }, { threshold: 0.35, rootMargin: '-20% 0px -40% 0px' });
+    spyTargets.forEach(t => {
+      if (t.section) spyIo.observe(t.section);
+    });
+  }
+</script>

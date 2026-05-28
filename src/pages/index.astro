@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+import Background from '../components/Background.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Manifesto from '../components/Manifesto.astro';
+import LogoMark from '../components/LogoMark.astro';
+import Sala from '../components/Sala.astro';
+import WhyExeris from '../components/WhyExeris.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>EXERIS — Alta Precisión Quirúrgica</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Archivo (substitute for KOPDHER: wide, geometric, structural).
+     Manrope (substitute for Gotham: clean geometric sans for body).
+     JetBrains Mono for technical accents. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <Background />
+  <Nav />
+  <Hero />
+  <Manifesto />
+  <LogoMark />
+  <Sala />
+  <WhyExeris />
+  <CtaFinal />
+  <Footer />
+
+  <script>
+    // Intersection observer for reveal animations
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
